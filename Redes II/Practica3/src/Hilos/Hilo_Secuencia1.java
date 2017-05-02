@@ -22,6 +22,7 @@ public class Hilo_Secuencia1 implements Runnable{
     int maxInterruptions;
     int contadorInterrupcion;
     UIControl control;
+    LoggerHilos logger;
     
     
     public Hilo_Secuencia1(char letraActual, int valorPrimoInicial,int maxInterruptions,UIControl control){
@@ -31,13 +32,14 @@ public class Hilo_Secuencia1 implements Runnable{
         this.maxInterruptions = maxInterruptions;
         contadorInterrupcion = 0;
         this.control = control;
+        logger = new LoggerHilos();
     }
     public synchronized void generarABC() {
         //System.out.println("ENTRE A GENERAR");
             while(true){
             try {
                 Thread.sleep(200);
-                System.out.println(getABCActual());
+                //System.out.println(getABCActual());
                 control.mostrarHilo1("Letra: " + Character.toString(getABCActual()));
 
                 //letraActualNum = getABCActual();
@@ -48,7 +50,7 @@ public class Hilo_Secuencia1 implements Runnable{
                 }
             } catch (InterruptedException ex) {
                 control.mostrarHilo1("---------INTERRUPCIÓN-------");
-                System.out.println("Interrumpido imprimiendo abc:");
+                //System.out.println("Interrumpido imprimiendo abc:");
                 setBandera(1);
                 increaseInterruptions();
                 //System.out.println("VALOR CONTADOR:" + getInterruptionsCounter());
@@ -76,11 +78,11 @@ public class Hilo_Secuencia1 implements Runnable{
                 try {
                     Thread.sleep(200);
                     control.mostrarHilo1("Número primo: "+Integer.toString(i));
-                    System.out.println("Numero primo: " + i);
+                    //System.out.println("Numero primo: " + i);
                     setPrimoActual(i);
                 } catch (InterruptedException ex) {
                     control.mostrarHilo1("---------INTERRUPCIÓN-------");
-                    System.out.println("Interrumpido Imprimiendo Primos");
+                    //System.out.println("Interrumpido Imprimiendo Primos");
                     setBandera(0);
                     increaseInterruptions();
                     //System.out.println("VALOR CONTADOR PRIMO:" + getInterruptionsCounter());
@@ -128,27 +130,30 @@ public class Hilo_Secuencia1 implements Runnable{
     }
     @Override
     public void run() {
-        try {
-            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            Thread.sleep(100);
-            while(true){
-                if(getInterruptionsCounter()== maxInterruptions){
-                    control.mostrarHilo1("FIN HILO 1");
-                    System.out.println("Finalizando Hilo 1");
-                    break;
+        while(true){
+            //logger.agregarLog("Hilo 1 - Estado: " + "Ejecución");
+            if(getInterruptionsCounter()== maxInterruptions){
+                control.mostrarHilo1("FIN HILO 1");
+                try {
+                    //System.out.println("Finalizando Hilo 1");
+                    //logger.agregarLog("Hilo 1 - Finalizado");
+                    System.out.println("Intentando JOIN Hilo 1");
+                    Thread.currentThread().join(100);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Hilo_Secuencia1.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                if(getBandera() == 0){
-                    //System.out.println("Imprimiendo ABC");
-                    generarABC();
-                }
-                if(getBandera() == 1){
-                    //System.out.println("Imprimiendo Primos");
-                    generarPrimos();
-                }
+                break;
             }
-        } catch (InterruptedException ex) {
-            System.out.println("Terminando hilo");
-            //Logger.getLogger(Hilo_Secuencia1.class.getName()).log(Level.SEVERE, null, ex);
+            if(getBandera() == 0){
+                //System.out.println("Imprimiendo ABC");
+                logger.agregarLog("Hilo 1 - Estado: Ejecución - Secuencia: " + "Abecedario");
+                generarABC();
+            }
+            if(getBandera() == 1){
+                //System.out.println("Imprimiendo Primos");
+                logger.agregarLog("Hilo 1 - Estado: Ejecución - Secuencia: " + "Números Primos");
+                generarPrimos();
+            }
         }
     }
 }

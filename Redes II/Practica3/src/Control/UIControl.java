@@ -36,4 +36,7 @@ public class UIControl{
     public void mostrarInterrupcion2(String valor){
         user.jTextinter2.append(valor+ "\n");
     }
+    public UI getUserInterface(){
+        return this.user;
+    }
 }

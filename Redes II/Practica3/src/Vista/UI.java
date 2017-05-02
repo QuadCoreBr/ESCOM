@@ -7,6 +7,11 @@ package Vista;
 
 import Control.UIControl;
 import Hilos.Hilo_Interrupciones;
+import Hilos.LoggerHilos;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
 /**
@@ -17,14 +22,19 @@ public class UI extends javax.swing.JFrame {
     /**
      * Creates new form UI
      */
+
     volatile UIControl control;
-    volatile Hilo_Interrupciones hi;
-    public UI() {
+    public volatile Hilo_Interrupciones hi;
+    public Thread hilo_i;
+    LoggerHilos logger;
+    public UI() throws IOException {
         initComponents();
         myInitComponents();
     }
-    private void myInitComponents(){
-        
+    private void myInitComponents() throws IOException{
+        control = new UIControl(UI.this);
+        hilo_i = new Thread(new Hilo_Interrupciones(control));
+        logger = new LoggerHilos();
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -159,14 +169,18 @@ public class UI extends javax.swing.JFrame {
                @Override
                protected Object doInBackground() throws Exception {
                    System.out.println("Entre a swing");
-                   control = new UIControl(UI.this);
-                   hi = new Hilo_Interrupciones(control);
-                   hi.start();
+                   
+                   hilo_i.start();
+                   logger.agregarLog("Hilo Principal (MAIN) - Iniciado");
+                   
+                   hilo_i.join(100);
+                   
                    return null;
                }
                
            };
            worker.execute();
+           
            
     }//GEN-LAST:event_iniciarAccionActionPerformed
 
@@ -200,7 +214,11 @@ public class UI extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new UI().setVisible(true);
+                try {
+                    new UI().setVisible(true);
+                } catch (IOException ex) {
+                    Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
         
