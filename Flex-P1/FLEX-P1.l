@@ -1,7 +1,7 @@
 digito [0-9]
 entero ([-]|[+])?{digito}+
 decimal ([-]|[+])?{digito}*\.{digito}+
-palabraReserv ([iI][nN][tT])|[cC][hH][aA][rR]|[wW][hH][iI][lL][eE]|[fF][oO][rR]|[dD][oO][uU][bB][lL][eE]|[eE][lL][sS][eE]|[lL][oO][nN][gG]|[sS][wW][iI][tT][cC][hH]|[cC][aA][sS][eE]|[eE][nN][uU][mM]|[rR][eE][tT][uU][rR][nN]|[fF][lL][oO][aA][tT]|[vV][oO][iI][dD]|[gG][oO][tT][oO]|[dD][oO]|[iI][fF]
+palabraReserv int|char|while|for|double|else|long|switch|case|enum|return|float|void|goto|do|if
 nombreVariable [_a-zA-Z]+[0-9]*[_a-zA-Z]*[0-9]*
 opcionesNumeros {entero}|{decimal}
 suma ({opcionesNumeros}\+)+{opcionesNumeros} 
